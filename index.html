@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> ISS Live </title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- bibliothèque de calcul d'éphémérides de satellites  -->
+    <script src="lib/satellite.min.js"></script>
+    <!-- gestion de la 3d -->
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-orbit-controls@1.3.0/dist/aframe-orbit-controls.min.js"></script>
+    <!-- modules spécifiques de gestions des composants 3d - voir aframe.io - -->
+    <script src="js/etiquette.js"></script>
+    <script src="js/lookcam.js"></script>
+    <script src="js/iss-aframe.js"></script>
+    <script src="js/logposition.js"></script>
+</head>
+
+<body>
+
+    <a-scene id="iss" embedded vr-mode-ui="enabled: false">
+
+        <!-- carte du monde -->
+        <a-assets>
+            <img id="my-texture" src="img/coastlines.png">
+        </a-assets>
+
+        <!-- station ISS -->
+        <a-entity position="0 0 0">
+            <a-sphere iss="R:1.0" radius="0.01" material="shader: standard; color: #c25f5a"></a-sphere>
+            <a-text iss="R:1.1" lookCam font="kelsonsans" value="ISS" width="2.1" position="0 0 0" rotation="0 0 0"
+                color="#c25f5a" shadow="cast: true"></a-text>
+        </a-entity>
+
+        <!-- la Terre -->
+        <a-sphere position="0 0 0" radius="1.0" material="src: #my-texture;shader: standard;  roughness: 1.0 ;"
+            shadow="receive: true"> </a-sphere>
+
+        <!-- axe Terre -->
+        <a-cylinder color="#c25f5a" height="2.2" radius="0.01" position="0 0 0"></a-cylinder>
+
+        <!-- caméra -->
+        <a-entity camera="fov:50" orbit-controls="target: 0 0 0; minDistance: 1.1; 
+                maxDistance: 6; initialPosition: 0 0 5 ; minPolarAngle: 0 ; maxPolarAngle: 180">
+        </a-entity>
+
+        <!-- éclairage lié à la caméra -->
+        <a-entity light="   type: point ;   castShadow: false;
+        intensity:  0.85 ;  shadowCameraVisible: false;  color: ivory" logposition></a-entity>
+
+        <!-- éclairage fixe -->
+        <a-entity light="type: ambient; intensity: 0.1;"></a-entity>
+
+        <!-- fond -->
+        <a-sky color="Black"></a-sky>
+
+    </a-scene>
+ 
+    <div class="flex-container">
+        <div><b>Position de ISS </b></div>
+        <div> Latitude = <label id="lat"></label> </div>
+        <div>Longitude = <label id="lon"></label></div>
+
+    </div>
+</body>
+<!-- calcul  de la position de l'ISS à partir des TLE de l'ISS-->
+<script src="js/script.js"></script>
+
+</html>
