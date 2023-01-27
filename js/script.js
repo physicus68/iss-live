@@ -11,14 +11,15 @@ function initTLE() {
 
     // il n'y a pas de valeurs de TLE
     if (!localStorage.getItem('date_maj')) {
+        console.log('création des archives TLE ...');
         loadDoc();
-    }
-
-    // on vérifie l'age des valeurs ( > 2 heures? )
-    date = parseInt(localStorage.getItem('date_maj'));
-    if ((Date.now() - date) > 3600 * 2 * 1000) {
-        console.log('TLE stockées trop anciennes, téléchargement des données ...');
-        loadDoc();        
+    } else {
+        // on vérifie l'age des valeurs ( > 2 heures? )
+        date = parseInt(localStorage.getItem('date_maj'));
+        if ((Date.now() - date) > 3600 * 2 * 1000) {
+            console.log('TLE stockées trop anciennes, téléchargement des données ...');
+            loadDoc();
+        }
     }
 
     // on charge les TLE
@@ -41,14 +42,14 @@ function loadDoc() {
             for (let i = 0; i < i_max; i++) {
                 // 25544U on cherchee l'ISS
                 if (lignes[i].startsWith('ISS (ZARYA) ')) {
-                    console.log(lignes[i]);
+                    //console.log(lignes[i]);
                     i++;
                     tle_L1 = lignes[i];
-                    console.log();
+                    //console.log();
 
                     i++
                     tle_L2 = lignes[i]
-                    console.log(lignes[i]);
+                    //console.log(lignes[i]);
                 }
             }
             // local storage des TLE !
@@ -59,7 +60,7 @@ function loadDoc() {
         }
 
     }
-    xhttp.open("GET", "https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle");
+    xhttp.open("GET", "https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=tle", false );
     xhttp.send();
 }
 
@@ -72,11 +73,11 @@ function positionNow() {
     const gmst = satellite.gstime(date);
     const position = satellite.eciToGeodetic(positionAndVelocity.position, gmst);
 
-    positionISS.LON = satellite.degreesLong( position.longitude );
-    positionISS.LAT = satellite.degreesLat( position.latitude );
+    positionISS.LON = satellite.degreesLong(position.longitude);
+    positionISS.LAT = satellite.degreesLat(position.latitude);
 
-    document.getElementById("lat").innerHTML =  positionISS.LAT.toFixed(2) + " °";
-    document.getElementById("lon").innerHTML =  positionISS.LON.toFixed(2) + " °";
+    document.getElementById("lat").innerHTML = positionISS.LAT.toFixed(2) + " °";
+    document.getElementById("lon").innerHTML = positionISS.LON.toFixed(2) + " °";
 
     window.setTimeout(positionNow, 200);
 }
